@@ -1,33 +1,25 @@
-# Import Splinter, BeautifulSoup, and Pandas
+#!/usr/bin/env python
+# coding: utf-8
+
+
+
+# Import Splinter and BeautifulSoup
 from splinter import Browser
 from bs4 import BeautifulSoup as soup
 import pandas as pd
-import datetime as dt
-
 
 def scrape_all():
-    # Initiate headless driver for deployment
-    from webdriver_manager import chrome 
+   # Initiate headless driver for deployment
+   browser = Browser("chrome", executable_path="chromedriver", headless=True)
 
-    executable_path = {'executable_path': chrome.ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
-    
-    news_title, news_paragraph = mars_news(browser)
+# Set the executable path and initialize the chrome browser in splinter
+from webdriver_manager import chrome 
 
-    # Run all scraping functions and store results in a dictionary
-    data = {
-        "news_title": news_title,
-        "news_paragraph": news_paragraph,
-        "featured_image": featured_image(browser),
-        "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
-        }
-
-    # Stop webdriver and return data
-    browser.quit()
-    return data
+executable_path = {'executable_path': chrome.ChromeDriverManager().install()}
+browser = Browser('chrome', **executable_path, headless=False)
 
 
+# Visit the mars nasa news site
 def mars_news(browser):
 
     # Scrape Mars News
@@ -56,6 +48,8 @@ def mars_news(browser):
     return news_title, news_p
 
 
+### Featured Images
+
 def featured_image(browser):
     # Visit URL
     url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
@@ -80,12 +74,13 @@ def featured_image(browser):
         img_url_rel = img_soup.select_one('figure.lede a img').get("src")
 
     except AttributeError:
-        return None
+          return None
 
     # Use the base url to create an absolute url
     img_url = f'https://www.jpl.nasa.gov{img_url_rel}'
 
     return img_url
+
 
 def mars_facts():
     # Add try/except for error handling
@@ -101,9 +96,17 @@ def mars_facts():
     df.set_index('Description', inplace=True)
 
     # Convert dataframe into HTML format, add bootstrap
-    return df.to_html(classes="table table-striped")
+    return df.to_html()
 
-if __name__ == "__main__":
+# Now let's break it down:
 
-    # If running as script, print scraped data
-    print(scrape_all())
+# df = pd.read_html('http://space-facts.com/mars/')[0] With this line, we're creating a new DataFrame from the HTML table. The Pandas function read_html() specifically searches for and returns a list of tables found in the HTML. By specifying an index of 0, we're telling Pandas to pull only the first table it encounters, or the first item in the list. Then, it turns the table into a DataFrame.
+# df.columns=['description', 'value'] Here, we assign columns to the new DataFrame for additional clarity.
+# df.set_index('description', inplace=True) By using the .set_index() function, we're turning the Description column into the DataFrame's index. inplace=True means that the updated index will remain in place, without having to reassign the DataFrame to a new variable.
+
+
+
+browser.quit()
+
+
+
