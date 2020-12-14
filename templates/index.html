@@ -54,7 +54,7 @@
                     <br>
                     <h3>Mars Facts</h3>
                     <div style="max-width: 450px; max-height: 150px; font-size: 15px; margin-bottom: 65px;">
-                        {{ mars.mars_facts|safe}}
+                        {{ mars.facts|safe}}
                     </div>
                 </div> <!-- col4 -->
             </div><!-- Row -->
@@ -63,15 +63,14 @@
         <!-- Cards -->
         <h3 style="padding-top: 50px; margin-top: 100px; text-align: center;">Mars Hemispheres</h3>
         <div class="card-deck">
-            <hr>
             <div class="col-md-12">
                 <div class="row">
-                    {% for item in mars.hiu %}
+                    {% for item in mars.hemishpere %}
                     <div class="col-md-6">
                         <div class="card text-white bg-dark" style="margin: 30px;">
-                            <img class="card-img-top" src="{{ item.img_url }}" />
+                            <img class="card-img-top" src="{{ item.Image_URL }}" />
                             <div class="card-body">
-                                <p class="card-text">{{ item.title }}</p>
+                                <p class="card-text">{{ item.Title }}</p>
                             </div>
                         </div>
                     </div>
